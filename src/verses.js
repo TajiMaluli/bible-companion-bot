@@ -86,6 +86,15 @@ const keywordMap = loadJson(join(dataDir, 'keyword_map.json'));
 
 // ── Public helpers ────────────────────────────────────────────────────────────
 
+/**
+ * Returns true if a given book/chapter/verse triple exists in the KJV index.
+ * book may contain spaces ("1 John") — they are stripped before lookup.
+ */
+export function verifyRef(book, chapter, verse) {
+  const key = `${String(book).replace(/\s+/g, '')}|${chapter}|${verse}`;
+  return kjvIndex.has(key);
+}
+
 export function listTopics() {
   return Object.keys(topics);
 }

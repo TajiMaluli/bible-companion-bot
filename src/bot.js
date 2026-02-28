@@ -1,6 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { upsertUser, updateUser } from './storage.js';
-import { listTopics, detectTopic, getVersesForUser, searchVerses, getTopicVerses } from './verses.js';
+import { listTopics, detectTopic, getVersesForUser, searchVerses, getTopicVerses, verifyRef } from './verses.js';
 import { askClaude } from './claude.js';
 
 if (!process.env.BOT_TOKEN) {
@@ -94,24 +94,41 @@ bot.on('text', async ctx => {
   //    KJV vocabulary (fear, care, sorrow) rarely matches modern words (anxious,
   //    worried, sad), so we combine keyword search, topic detection, and the
   //    user's saved topic, then deduplicate.
-  const keywordHits   = searchVerses(message);                // full-text match on message
+  const keywordHits   = searchVerses(message, 15);            // full-text match on message
   const detectedTopic = detectTopic(message);
   const topicHits     = detectedTopic ? getTopicVerses(detectedTopic) : [];
-  const userTopicHits = user.topic ? searchVerses(user.topic, 5) : [];
+  const userTopicHits = user.topic ? searchVerses(user.topic, 8) : [];
 
   const seen   = new Set(keywordHits.map(v => v.ref));
   const verses = [...keywordHits];
   for (const v of [...topicHits, ...userTopicHits]) {
     if (!seen.has(v.ref)) { seen.add(v.ref); verses.push(v); }
   }
-  // Cap at 10 so the prompt stays concise
-  verses.splice(10);
+  // Cap at 15 for better topic coverage while keeping prompt manageable
+  verses.splice(15);
+
+  // Log retrieved context so it can be verified in Render logs
+  console.log(
+    `[claude] context for user ${user.user_id}: ${verses.length} verses` +
+    (verses.length > 0 ? ` | ${verses.map(v => v.ref).join(', ')}` : '')
+  );
 
   // 2. Ask Claude, strictly grounded in those verses
   try {
     const reply = await askClaude(message, verses);
 
     if (reply) {
+      // Hallucination check: scan reply for Bible refs and verify each one
+      // Matches patterns like "John 3:16", "1 John 3:16", "Genesis 1:1"
+      const refPattern = /\b((?:[1-3] )?[A-Z][a-z]+(?:\s[A-Za-z]+)*)\s+(\d+):(\d+)\b/g;
+      let m;
+      while ((m = refPattern.exec(reply)) !== null) {
+        const [full, book, chapter, verse] = m;
+        if (!verifyRef(book, chapter, verse)) {
+          console.warn(`[hallucination-check] unverified reference: ${full}`);
+        }
+      }
+
       ctx.reply(reply);
       return;
     }

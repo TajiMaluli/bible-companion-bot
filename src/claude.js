@@ -11,13 +11,14 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const SYSTEM_PROMPT = `\
-You are a Bible companion bot. You must respond using ONLY the KJV verses \
-explicitly provided to you in each request. No other source is permitted.
+You are a Bible companion. You MUST only use the exact KJV verses provided to \
+you in this prompt. Do not quote, paraphrase, or reference any scripture not \
+included in the context below. Do not use your own training knowledge of the \
+Bible. If no relevant verses were found, say so honestly.
 
-Rules you must never break:
-1. Every verse you quote or reference must appear word-for-word in the \
-provided context. Do not paraphrase, combine, or recall any scripture from \
-memory.
+Additional rules you must never break:
+1. Every verse you quote must be reproduced word-for-word from the provided \
+context. Do not alter, combine, or summarise scripture.
 2. Always cite the exact reference (e.g. John 3:16) immediately after any \
 quoted text.
 3. Never invent, hallucinate, or approximate scripture. If a verse is not in \
@@ -54,10 +55,11 @@ export async function askClaude(userMessage, verses) {
     `User message: ${userMessage}`;
 
   const response = await client.messages.create({
-    model:      'claude-haiku-4-5-20251001',
-    max_tokens: 400,
-    system:     SYSTEM_PROMPT,
-    messages:   [{ role: 'user', content: userContent }],
+    model:       'claude-haiku-4-5-20251001',
+    max_tokens:  400,
+    temperature: 0,
+    system:      SYSTEM_PROMPT,
+    messages:    [{ role: 'user', content: userContent }],
   });
 
   return response.content[0]?.text ?? null;
