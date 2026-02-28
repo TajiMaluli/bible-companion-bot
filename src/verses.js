@@ -25,8 +25,9 @@ function loadJson(filePath) {
 // lookupText() strips spaces from topics.json book names before querying,
 // so "1 John" → "1John" matches the index automatically.
 
-const kjvIndex = new Map();
-const kjvPath  = join(dataDir, 'kjv.json');
+const kjvIndex  = new Map();
+const kjvVerses = []; // flat list used by searchVerses(); preserves original book name
+const kjvPath   = join(dataDir, 'kjv.json');
 
 if (!existsSync(kjvPath)) {
   console.error('[FATAL] data/kjv.json not found.');
@@ -48,8 +49,10 @@ if (Array.isArray(kjvRaw)) {
     const verse   = v.verse    ?? v.Verse;
     const text    = v.text     ?? v.Text;
     if (book && chapter && verse && text) {
+      const clean = String(text).trim();
       // Strip spaces so "1 John" and "1John" both resolve to "1John|..."
-      kjvIndex.set(`${String(book).replace(/\s+/g, '')}|${chapter}|${verse}`, String(text).trim());
+      kjvIndex.set(`${String(book).replace(/\s+/g, '')}|${chapter}|${verse}`, clean);
+      kjvVerses.push({ ref: `${book} ${chapter}:${verse}`, text: clean });
     }
   }
 } else if (typeof kjvRaw === 'object' && kjvRaw !== null) {
@@ -146,4 +149,56 @@ export function getVersesForUser(user, count = 2) {
   }
 
   return picked.map(ref => ({ ref: formatRef(ref), text: lookupText(ref) }));
+}
+
+/**
+ * Returns all verses for a named topic without touching the sent-log.
+ * Used to enrich Claude's context when a topic is detected.
+ */
+export function getTopicVerses(topicName) {
+  const refs = topics[topicName] ?? [];
+  return refs.flatMap(ref => {
+    const text = lookupText(ref);
+    return text ? [{ ref: formatRef(ref), text }] : [];
+  });
+}
+
+// ── Full-text keyword search across all 31 k verses ───────────────────────────
+
+const STOPWORDS = new Set([
+  'the','a','an','is','are','was','were','be','been','being','have','has','had',
+  'do','does','did','will','would','could','should','may','might','shall','can',
+  'to','of','in','for','on','with','at','by','from','up','about','into',
+  'i','me','my','we','our','you','your','he','his','she','her','it','its',
+  'they','them','their','what','which','who','this','that','these','those',
+  'not','no','so','but','and','or','if','then','than','when','where','how',
+  'all','both','some','just','as','while','also','more','very','feel','need',
+  'want','know','think','help','please','am','get','got','let','put','say',
+]);
+
+/**
+ * Keyword search across the full KJV. Returns up to `limit` verses scored by
+ * how many query keywords appear in the verse text, highest score first.
+ * Returns { ref: "Book ch:v", text: "..." }[]
+ */
+export function searchVerses(query, limit = 10) {
+  const words = query.toLowerCase()
+    .replace(/[^a-z\s]/g, '')
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !STOPWORDS.has(w));
+
+  if (words.length === 0) return [];
+
+  const scored = [];
+  for (const v of kjvVerses) {
+    const lower = v.text.toLowerCase();
+    let score = 0;
+    for (const word of words) {
+      if (lower.includes(word)) score++;
+    }
+    if (score > 0) scored.push({ score, ref: v.ref, text: v.text });
+  }
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map(({ ref, text }) => ({ ref, text }));
 }

@@ -1,6 +1,7 @@
 import { Telegraf } from 'telegraf';
 import { upsertUser, updateUser } from './storage.js';
-import { listTopics, detectTopic, getVersesForUser } from './verses.js';
+import { listTopics, detectTopic, getVersesForUser, searchVerses, getTopicVerses } from './verses.js';
+import { askClaude } from './claude.js';
 
 if (!process.env.BOT_TOKEN) {
   throw new Error('BOT_TOKEN environment variable is required');
@@ -83,20 +84,46 @@ bot.command('settime', ctx => {
   ctx.reply('Time updated.');
 });
 
-// ── Keyword detection on plain text ──────────────────────────────────────────
+// ── Plain-text messages → Claude Haiku grounded in local KJV search ──────────
 
-bot.on('text', ctx => {
+bot.on('text', async ctx => {
   if (ctx.message.text.startsWith('/')) return;
 
-  const user  = registerUser(ctx);
-  const topic = detectTopic(ctx.message.text);
-  if (!topic) return;
+  const user    = registerUser(ctx);
+  const message = ctx.message.text;
 
-  const resolvedTopic = listTopics().includes(topic) ? topic : user.topic;
-  const verses = getVersesForUser({ ...user, topic: resolvedTopic });
-  if (verses.length === 0) return;
+  // 1. Build context: keyword search across full KJV + topic-pinned verses.
+  //    KJV vocabulary (fear, care, sorrow) rarely matches modern words (anxious,
+  //    worried, sad), so we combine both sources and deduplicate.
+  const keywordHits  = searchVerses(message);                 // full-text match
+  const detectedTopic = detectTopic(message);
+  const topicHits    = detectedTopic ? getTopicVerses(detectedTopic) : [];
 
-  ctx.reply(buildVerseMessage(verses));
+  const seen   = new Set(keywordHits.map(v => v.ref));
+  const verses = [...keywordHits];
+  for (const v of topicHits) {
+    if (!seen.has(v.ref)) verses.push(v);
+  }
+  // Cap at 10 so the prompt stays concise
+  verses.splice(10);
+
+  // 2. Ask Claude, strictly grounded in those verses
+  try {
+    const reply = await askClaude(message, verses);
+
+    if (reply) {
+      ctx.reply(reply);
+      return;
+    }
+  } catch (err) {
+    console.error('[claude] API error:', err.message);
+  }
+
+  // 3. Fallback: Claude unavailable — reply with topic-based verse directly
+  const topic   = detectTopic(message);
+  const resolved = topic && listTopics().includes(topic) ? topic : user.topic;
+  const fallback = getVersesForUser({ ...user, topic: resolved });
+  if (fallback.length > 0) ctx.reply(buildVerseMessage(fallback));
 });
 
 export { buildVerseMessage };
