@@ -120,35 +120,42 @@ function lookupText(ref) {
  */
 export function getVersesForUser(user, count = 2) {
   const topicName = user.topic || 'encouragement';
-  const refs      = topics[topicName] ?? topics['encouragement'] ?? [];
   const today     = todayDate();
-
   const sentToday = new Set(getSentVersesToday(user.user_id, today));
 
-  // Available = has text in index AND not sent today
-  let available = refs.filter(ref => {
-    const text = lookupText(ref);
-    return text !== null && !sentToday.has(formatRef(ref));
-  });
+  // Predefined topic: use curated ref list
+  if (topics[topicName]) {
+    const refs = topics[topicName];
 
-  // If the topic pool is exhausted for today, allow repeats
-  if (available.length === 0) {
-    available = refs.filter(ref => lookupText(ref) !== null);
+    let available = refs.filter(ref => {
+      const text = lookupText(ref);
+      return text !== null && !sentToday.has(formatRef(ref));
+    });
+
+    // If the topic pool is exhausted for today, allow repeats
+    if (available.length === 0) {
+      available = refs.filter(ref => lookupText(ref) !== null);
+    }
+
+    if (available.length === 0) return [];
+
+    const picked = available.sort(() => Math.random() - 0.5).slice(0, Math.min(count, available.length));
+    for (const ref of picked) logVerse(user.user_id, formatRef(ref), today);
+    return picked.map(ref => ({ ref: formatRef(ref), text: lookupText(ref) }));
   }
 
-  if (available.length === 0) return [];
-
-  // Shuffle and pick
-  const picked = available
-    .sort(() => Math.random() - 0.5)
-    .slice(0, Math.min(count, available.length));
-
-  // Log
-  for (const ref of picked) {
-    logVerse(user.user_id, formatRef(ref), today);
+  // Custom topic: full-text search as the verse pool
+  const pool = searchVerses(topicName, 20);
+  if (pool.length === 0) {
+    // Last resort: fall back to encouragement
+    return getVersesForUser({ ...user, topic: 'encouragement' }, count);
   }
 
-  return picked.map(ref => ({ ref: formatRef(ref), text: lookupText(ref) }));
+  const available = pool.filter(v => !sentToday.has(v.ref));
+  const source    = available.length > 0 ? available : pool; // allow repeats if exhausted
+  const picked    = source.sort(() => Math.random() - 0.5).slice(0, Math.min(count, source.length));
+  for (const v of picked) logVerse(user.user_id, v.ref, today);
+  return picked;
 }
 
 /**

@@ -30,21 +30,19 @@ bot.command('start', ctx => {
 
 bot.command('topics', ctx => {
   registerUser(ctx);
-  ctx.reply(listTopics().join('\n'));
+  ctx.reply(
+    `Suggested topics:\n${listTopics().join('\n')}\n\n` +
+    `You are not limited to these — set any word or phrase:\n` +
+    `/topic patience\n/topic David\n/topic Holy Spirit\n/topic healing`
+  );
 });
 
 bot.command('topic', ctx => {
-  const user  = registerUser(ctx);
-  const parts = ctx.message.text.trim().split(/\s+/);
-  const arg   = parts[1]?.toLowerCase();
+  const user = registerUser(ctx);
+  const arg  = ctx.message.text.trim().replace(/^\/topic\s*/i, '').trim().toLowerCase();
 
   if (!arg) {
     ctx.reply(`Current topic: ${user.topic}`);
-    return;
-  }
-
-  if (!listTopics().includes(arg)) {
-    ctx.reply(`Unknown topic. Available:\n${listTopics().join('\n')}`);
     return;
   }
 
@@ -94,15 +92,17 @@ bot.on('text', async ctx => {
 
   // 1. Build context: keyword search across full KJV + topic-pinned verses.
   //    KJV vocabulary (fear, care, sorrow) rarely matches modern words (anxious,
-  //    worried, sad), so we combine both sources and deduplicate.
-  const keywordHits  = searchVerses(message);                 // full-text match
+  //    worried, sad), so we combine keyword search, topic detection, and the
+  //    user's saved topic, then deduplicate.
+  const keywordHits   = searchVerses(message);                // full-text match on message
   const detectedTopic = detectTopic(message);
-  const topicHits    = detectedTopic ? getTopicVerses(detectedTopic) : [];
+  const topicHits     = detectedTopic ? getTopicVerses(detectedTopic) : [];
+  const userTopicHits = user.topic ? searchVerses(user.topic, 5) : [];
 
   const seen   = new Set(keywordHits.map(v => v.ref));
   const verses = [...keywordHits];
-  for (const v of topicHits) {
-    if (!seen.has(v.ref)) verses.push(v);
+  for (const v of [...topicHits, ...userTopicHits]) {
+    if (!seen.has(v.ref)) { seen.add(v.ref); verses.push(v); }
   }
   // Cap at 10 so the prompt stays concise
   verses.splice(10);
@@ -119,11 +119,13 @@ bot.on('text', async ctx => {
     console.error('[claude] API error:', err.message);
   }
 
-  // 3. Fallback: Claude unavailable — reply with topic-based verse directly
-  const topic   = detectTopic(message);
-  const resolved = topic && listTopics().includes(topic) ? topic : user.topic;
-  const fallback = getVersesForUser({ ...user, topic: resolved });
-  if (fallback.length > 0) ctx.reply(buildVerseMessage(fallback));
+  // 3. Fallback: Claude unavailable — reply with verse directly
+  if (verses.length > 0) {
+    ctx.reply(buildVerseMessage(verses.slice(0, 2)));
+  } else {
+    const fallback = getVersesForUser(user);
+    if (fallback.length > 0) ctx.reply(buildVerseMessage(fallback));
+  }
 });
 
 export { buildVerseMessage };
