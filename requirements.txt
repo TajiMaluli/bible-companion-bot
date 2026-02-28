@@ -1,0 +1,4 @@
+# Python reference — this is a Node.js project.
+# The anthropic SDK used at runtime is the npm package @anthropic-ai/sdk.
+# If you are running any Python utilities alongside this project, install:
+anthropic
