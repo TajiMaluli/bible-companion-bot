@@ -120,7 +120,7 @@ bot.on('text', async ctx => {
     if (reply) {
       // Hallucination check: scan reply for Bible refs and verify each one
       // Matches patterns like "John 3:16", "1 John 3:16", "Genesis 1:1"
-      const refPattern = /\b((?:[1-3] )?[A-Z][a-z]+(?:\s[A-Za-z]+)*)\s+(\d+):(\d+)\b/g;
+      const refPattern = /\b((?:[1-3] )?[A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\s+(\d+):(\d+)\b/g;
       let m;
       while ((m = refPattern.exec(reply)) !== null) {
         const [full, book, chapter, verse] = m;
