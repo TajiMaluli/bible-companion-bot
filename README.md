@@ -161,22 +161,75 @@ In the Render dashboard → your service → **Environment**, add:
 | Key | Value |
 |---|---|
 | `BOT_TOKEN` | Your token from @BotFather |
-| `PUBLIC_URL` | `https://<your-service-name>.onrender.com` |
+| `PUBLIC_URL` | `https://bible-companion-bot.onrender.com` |
 | `TZ` | `America/Los_Angeles` (or your timezone) |
-| `SQLITE_PATH` | `/var/data/bot.sqlite` |
 
 ### 3. Add a persistent disk
 
-SQLite data must survive deploys. In Render:
+User data (`users.json`, `sent_verses.json`) must survive deploys. In Render:
 
 1. Go to your service → **Disks** → **Add Disk**
 2. Set **Mount Path** to `/var/data`
 3. Set a reasonable size (1 GB is more than enough)
 4. Click **Save**
 
-Without a persistent disk, the database resets on every deploy.
+Without a persistent disk, user registrations reset on every deploy.
 
-### 4. Upload kjv.json
+### 4. Register the Telegram webhook
+
+After the service is live, run this **once** (locally or from the Render shell):
+
+```cmd
+node --env-file=.env scripts/setWebhook.js
+```
+
+Expected output:
+
+```
+Setting webhook to: https://bible-companion-bot.onrender.com/telegram
+setWebhook → ok | Webhook was set
+getWebhookInfo:
+  ok               : true
+  url              : https://bible-companion-bot.onrender.com/telegram
+  last_error_message: (none)
+  last_error_date  : (none)
+  pending_update_count: 0
+Webhook is active and pointing to the correct URL.
+```
+
+If `last_error_message` is not `(none)`, see the **Troubleshooting** section below.
+
+**From the Render shell** (if env vars are already set there):
+
+```bash
+node scripts/setWebhook.js
+```
+
+### 5. Verify the service is up
+
+```cmd
+curl https://bible-companion-bot.onrender.com/health
+```
+
+Returns `ok` if the server is running. If it times out, check the Render logs —
+the most common cause is the service sleeping on the free tier (first request
+wakes it; try again after ~30 seconds).
+
+---
+
+## Troubleshooting
+
+### Telegram returns `ok: false` / webhook errors
+
+1. Confirm `PUBLIC_URL` in Render env is exactly `https://bible-companion-bot.onrender.com` (no trailing slash).
+2. Run `node --env-file=.env scripts/setWebhook.js` and check `last_error_message`.
+3. Common errors:
+   - **"Wrong response from the webhook"** → the service hasn't finished deploying yet; wait and retry.
+   - **"Connection refused"** → the service is down or hasn't bound to `0.0.0.0`; check Render logs.
+   - **"SSL error"** → Render provides TLS automatically; no action needed on your side.
+4. Check `GET /health` returns `ok`. If it doesn't, the app crashed on startup — check Render logs for `[FATAL]` messages (usually a missing `BOT_TOKEN` or bad `kjv.json`).
+
+### 7. Upload kjv.json
 
 After deploying, use the Render **Shell** tab (or a startup script) to place
 `kjv.json` in `data/`. Alternatively, commit the file to your repo before

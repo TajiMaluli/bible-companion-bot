@@ -26,7 +26,7 @@ app.post('/telegram', async (req, res) => {
   }
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
   console.log(`[server] Listening on port ${PORT}`);
 
   if (PUBLIC_URL) {
