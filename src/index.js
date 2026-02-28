@@ -6,8 +6,13 @@ import express from 'express';
 import { bot } from './bot.js';
 import { startScheduler } from './scheduler.js';
 
-const PORT       = process.env.PORT       || 3000;
-const PUBLIC_URL = process.env.PUBLIC_URL ?? '';
+const PORT        = process.env.PORT || 3000;
+// Fall back to the known Render URL so the webhook always registers even if
+// the PUBLIC_URL env var is absent or mis-spelled on the dashboard.
+const PUBLIC_URL  = (process.env.PUBLIC_URL || 'https://bible-companion-bot.onrender.com')
+                      .replace(/\/$/, ''); // strip any trailing slash
+const WEBHOOK_PATH = '/telegram';
+const WEBHOOK_URL  = `${PUBLIC_URL}${WEBHOOK_PATH}`;
 
 const app = express();
 app.use(express.json());
@@ -15,8 +20,8 @@ app.use(express.json());
 // Health check
 app.get('/health', (_req, res) => res.send('ok'));
 
-// Telegram webhook receiver
-app.post('/telegram', async (req, res) => {
+// Telegram webhook receiver  —  POST /telegram
+app.post(WEBHOOK_PATH, async (req, res) => {
   try {
     await bot.handleUpdate(req.body);
     res.sendStatus(200);
@@ -28,17 +33,18 @@ app.post('/telegram', async (req, res) => {
 
 app.listen(PORT, '0.0.0.0', async () => {
   console.log(`[server] Listening on port ${PORT}`);
+  console.log(`[webhook] Registering: ${WEBHOOK_URL}`);
 
-  if (PUBLIC_URL) {
-    const webhookUrl = `${PUBLIC_URL}/telegram`;
-    try {
-      await bot.telegram.setWebhook(webhookUrl);
-      console.log(`[webhook] Set to ${webhookUrl}`);
-    } catch (err) {
-      console.error('[webhook] Failed to set webhook:', err.message);
+  try {
+    await bot.telegram.setWebhook(WEBHOOK_URL);
+    const info = await bot.telegram.getWebhookInfo();
+    if (info.url === WEBHOOK_URL) {
+      console.log(`[webhook] Confirmed active: ${info.url}`);
+    } else {
+      console.error(`[webhook] Mismatch — Telegram reports: ${info.url}`);
     }
-  } else {
-    console.warn('[webhook] PUBLIC_URL not set — webhook not registered');
+  } catch (err) {
+    console.error('[webhook] Registration failed:', err.message);
   }
 
   startScheduler();
