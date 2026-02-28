@@ -1,0 +1,196 @@
+{
+  "encouragement": [
+    { "book": "Philippians",    "chapter": 4,   "verse": 13 },
+    { "book": "Isaiah",         "chapter": 40,  "verse": 31 },
+    { "book": "Joshua",         "chapter": 1,   "verse": 9  },
+    { "book": "Deuteronomy",    "chapter": 31,  "verse": 6  },
+    { "book": "Romans",         "chapter": 8,   "verse": 28 },
+    { "book": "2 Corinthians",  "chapter": 12,  "verse": 9  },
+    { "book": "Jeremiah",       "chapter": 29,  "verse": 11 },
+    { "book": "Psalms",         "chapter": 46,  "verse": 1  },
+    { "book": "Matthew",        "chapter": 11,  "verse": 28 },
+    { "book": "Isaiah",         "chapter": 41,  "verse": 10 }
+  ],
+
+  "faith": [
+    { "book": "Hebrews",        "chapter": 11,  "verse": 1  },
+    { "book": "Romans",         "chapter": 10,  "verse": 17 },
+    { "book": "Mark",           "chapter": 11,  "verse": 24 },
+    { "book": "Matthew",        "chapter": 17,  "verse": 20 },
+    { "book": "2 Corinthians",  "chapter": 5,   "verse": 7  },
+    { "book": "Hebrews",        "chapter": 11,  "verse": 6  },
+    { "book": "James",          "chapter": 2,   "verse": 17 },
+    { "book": "Ephesians",      "chapter": 2,   "verse": 8  },
+    { "book": "Romans",         "chapter": 1,   "verse": 17 },
+    { "book": "Galatians",      "chapter": 2,   "verse": 20 }
+  ],
+
+  "love": [
+    { "book": "John",           "chapter": 3,   "verse": 16 },
+    { "book": "Romans",         "chapter": 5,   "verse": 8  },
+    { "book": "1 John",         "chapter": 4,   "verse": 8  },
+    { "book": "1 John",         "chapter": 4,   "verse": 19 },
+    { "book": "John",           "chapter": 13,  "verse": 34 },
+    { "book": "1 Corinthians",  "chapter": 13,  "verse": 4  },
+    { "book": "1 Corinthians",  "chapter": 13,  "verse": 13 },
+    { "book": "Matthew",        "chapter": 22,  "verse": 37 },
+    { "book": "Romans",         "chapter": 8,   "verse": 38 },
+    { "book": "Ephesians",      "chapter": 3,   "verse": 17 }
+  ],
+
+  "hope": [
+    { "book": "Romans",         "chapter": 15,  "verse": 13 },
+    { "book": "Jeremiah",       "chapter": 29,  "verse": 11 },
+    { "book": "Psalms",         "chapter": 31,  "verse": 24 },
+    { "book": "Romans",         "chapter": 8,   "verse": 24 },
+    { "book": "Lamentations",   "chapter": 3,   "verse": 22 },
+    { "book": "Lamentations",   "chapter": 3,   "verse": 23 },
+    { "book": "Isaiah",         "chapter": 40,  "verse": 31 },
+    { "book": "Hebrews",        "chapter": 6,   "verse": 19 },
+    { "book": "Psalms",         "chapter": 71,  "verse": 14 },
+    { "book": "1 Peter",        "chapter": 1,   "verse": 3  }
+  ],
+
+  "peace": [
+    { "book": "John",           "chapter": 14,  "verse": 27 },
+    { "book": "Philippians",    "chapter": 4,   "verse": 7  },
+    { "book": "Isaiah",         "chapter": 26,  "verse": 3  },
+    { "book": "Romans",         "chapter": 5,   "verse": 1  },
+    { "book": "Colossians",     "chapter": 3,   "verse": 15 },
+    { "book": "Psalms",         "chapter": 29,  "verse": 11 },
+    { "book": "Numbers",        "chapter": 6,   "verse": 26 },
+    { "book": "2 Thessalonians","chapter": 3,   "verse": 16 },
+    { "book": "Psalms",         "chapter": 119, "verse": 165},
+    { "book": "Matthew",        "chapter": 5,   "verse": 9  }
+  ],
+
+  "strength": [
+    { "book": "Philippians",    "chapter": 4,   "verse": 13 },
+    { "book": "Isaiah",         "chapter": 40,  "verse": 29 },
+    { "book": "Psalms",         "chapter": 46,  "verse": 1  },
+    { "book": "2 Samuel",       "chapter": 22,  "verse": 33 },
+    { "book": "Nehemiah",       "chapter": 8,   "verse": 10 },
+    { "book": "Psalms",         "chapter": 28,  "verse": 7  },
+    { "book": "Isaiah",         "chapter": 12,  "verse": 2  },
+    { "book": "Ephesians",      "chapter": 6,   "verse": 10 },
+    { "book": "1 Corinthians",  "chapter": 16,  "verse": 13 },
+    { "book": "Habakkuk",       "chapter": 3,   "verse": 19 }
+  ],
+
+  "wisdom": [
+    { "book": "Proverbs",       "chapter": 3,   "verse": 5  },
+    { "book": "Proverbs",       "chapter": 3,   "verse": 6  },
+    { "book": "James",          "chapter": 1,   "verse": 5  },
+    { "book": "Proverbs",       "chapter": 9,   "verse": 10 },
+    { "book": "Psalms",         "chapter": 111, "verse": 10 },
+    { "book": "Proverbs",       "chapter": 1,   "verse": 7  },
+    { "book": "Ecclesiastes",   "chapter": 7,   "verse": 12 },
+    { "book": "Colossians",     "chapter": 2,   "verse": 3  },
+    { "book": "Romans",         "chapter": 11,  "verse": 33 },
+    { "book": "Daniel",         "chapter": 2,   "verse": 20 }
+  ],
+
+  "anxiety": [
+    { "book": "Philippians",    "chapter": 4,   "verse": 6  },
+    { "book": "Philippians",    "chapter": 4,   "verse": 7  },
+    { "book": "Matthew",        "chapter": 6,   "verse": 34 },
+    { "book": "1 Peter",        "chapter": 5,   "verse": 7  },
+    { "book": "Psalms",         "chapter": 55,  "verse": 22 },
+    { "book": "Isaiah",         "chapter": 41,  "verse": 10 },
+    { "book": "John",           "chapter": 14,  "verse": 27 },
+    { "book": "Matthew",        "chapter": 6,   "verse": 27 },
+    { "book": "Psalms",         "chapter": 94,  "verse": 19 },
+    { "book": "2 Timothy",      "chapter": 1,   "verse": 7  }
+  ],
+
+  "fear": [
+    { "book": "2 Timothy",      "chapter": 1,   "verse": 7  },
+    { "book": "Psalms",         "chapter": 56,  "verse": 3  },
+    { "book": "Isaiah",         "chapter": 41,  "verse": 10 },
+    { "book": "Joshua",         "chapter": 1,   "verse": 9  },
+    { "book": "Psalms",         "chapter": 23,  "verse": 4  },
+    { "book": "Romans",         "chapter": 8,   "verse": 15 },
+    { "book": "Deuteronomy",    "chapter": 31,  "verse": 8  },
+    { "book": "1 John",         "chapter": 4,   "verse": 18 },
+    { "book": "Hebrews",        "chapter": 13,  "verse": 6  },
+    { "book": "Psalms",         "chapter": 27,  "verse": 1  }
+  ],
+
+  "forgiveness": [
+    { "book": "1 John",         "chapter": 1,   "verse": 9  },
+    { "book": "Ephesians",      "chapter": 4,   "verse": 32 },
+    { "book": "Matthew",        "chapter": 6,   "verse": 14 },
+    { "book": "Colossians",     "chapter": 3,   "verse": 13 },
+    { "book": "Psalms",         "chapter": 103, "verse": 12 },
+    { "book": "Isaiah",         "chapter": 43,  "verse": 25 },
+    { "book": "Acts",           "chapter": 3,   "verse": 19 },
+    { "book": "Romans",         "chapter": 8,   "verse": 1  },
+    { "book": "Micah",          "chapter": 7,   "verse": 18 },
+    { "book": "Luke",           "chapter": 6,   "verse": 37 }
+  ],
+
+  "gratitude": [
+    { "book": "1 Thessalonians","chapter": 5,   "verse": 18 },
+    { "book": "Psalms",         "chapter": 100, "verse": 4  },
+    { "book": "Colossians",     "chapter": 3,   "verse": 17 },
+    { "book": "Philippians",    "chapter": 4,   "verse": 6  },
+    { "book": "Psalms",         "chapter": 107, "verse": 1  },
+    { "book": "Ephesians",      "chapter": 5,   "verse": 20 },
+    { "book": "James",          "chapter": 1,   "verse": 17 },
+    { "book": "Psalms",         "chapter": 9,   "verse": 1  },
+    { "book": "Hebrews",        "chapter": 12,  "verse": 28 },
+    { "book": "Luke",           "chapter": 17,  "verse": 16 }
+  ],
+
+  "salvation": [
+    { "book": "John",           "chapter": 3,   "verse": 16 },
+    { "book": "Romans",         "chapter": 10,  "verse": 9  },
+    { "book": "Ephesians",      "chapter": 2,   "verse": 8  },
+    { "book": "Acts",           "chapter": 4,   "verse": 12 },
+    { "book": "Romans",         "chapter": 6,   "verse": 23 },
+    { "book": "Titus",          "chapter": 3,   "verse": 5  },
+    { "book": "John",           "chapter": 14,  "verse": 6  },
+    { "book": "1 John",         "chapter": 5,   "verse": 13 },
+    { "book": "2 Corinthians",  "chapter": 6,   "verse": 2  },
+    { "book": "Psalms",         "chapter": 27,  "verse": 1  }
+  ],
+
+  "prayer": [
+    { "book": "Matthew",        "chapter": 7,   "verse": 7  },
+    { "book": "Philippians",    "chapter": 4,   "verse": 6  },
+    { "book": "James",          "chapter": 5,   "verse": 16 },
+    { "book": "1 Thessalonians","chapter": 5,   "verse": 17 },
+    { "book": "Mark",           "chapter": 11,  "verse": 24 },
+    { "book": "Matthew",        "chapter": 21,  "verse": 22 },
+    { "book": "John",           "chapter": 15,  "verse": 7  },
+    { "book": "Psalms",         "chapter": 145, "verse": 18 },
+    { "book": "Jeremiah",       "chapter": 33,  "verse": 3  },
+    { "book": "1 John",         "chapter": 5,   "verse": 14 }
+  ],
+
+  "grief": [
+    { "book": "Psalms",         "chapter": 34,  "verse": 18 },
+    { "book": "Matthew",        "chapter": 5,   "verse": 4  },
+    { "book": "Revelation",     "chapter": 21,  "verse": 4  },
+    { "book": "Psalms",         "chapter": 147, "verse": 3  },
+    { "book": "Isaiah",         "chapter": 53,  "verse": 4  },
+    { "book": "Romans",         "chapter": 8,   "verse": 28 },
+    { "book": "John",           "chapter": 11,  "verse": 35 },
+    { "book": "2 Corinthians",  "chapter": 1,   "verse": 3  },
+    { "book": "2 Corinthians",  "chapter": 1,   "verse": 4  },
+    { "book": "Psalms",         "chapter": 23,  "verse": 4  }
+  ],
+
+  "joy": [
+    { "book": "Nehemiah",       "chapter": 8,   "verse": 10 },
+    { "book": "Psalms",         "chapter": 16,  "verse": 11 },
+    { "book": "John",           "chapter": 15,  "verse": 11 },
+    { "book": "Romans",         "chapter": 15,  "verse": 13 },
+    { "book": "Philippians",    "chapter": 4,   "verse": 4  },
+    { "book": "James",          "chapter": 1,   "verse": 2  },
+    { "book": "Psalms",         "chapter": 30,  "verse": 5  },
+    { "book": "Galatians",      "chapter": 5,   "verse": 22 },
+    { "book": "Isaiah",         "chapter": 55,  "verse": 12 },
+    { "book": "Zephaniah",      "chapter": 3,   "verse": 17 }
+  ]
+}
